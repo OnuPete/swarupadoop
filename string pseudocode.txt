@@ -60,7 +60,7 @@ int strpbrk(String str1, String str2){
 	return loc//returns -1 if not found
 }
 
-int strcspan(String search, String key){
+int strcspn(String search, String key){
 	for(int i = 0; i < search.length; i++){
 		int loc = strchar(str1, str2.charAt(i))
 		if(loc >= 0) return loc

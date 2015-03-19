@@ -24,4 +24,64 @@ strcat(destination, source)
 assert destination = "foobar"
 
 
-		
+		strncat
+String destination = "foo"
+String source = "bar"
+strncat(destination, source, 2)
+assert destination = "fooba"
+
+
+		strcmp
+String str1 = "aaaf"
+String str2 = "aaaz"
+assert strcmp(str1, str2)< 0
+assert strcmp("aaf","aaa")>0
+assert strcmp("aaa","aaa") = 0
+assert strcmp("a","afuck") = 0
+
+		strncmp
+String str1 = "aaaf"
+String str2 = "aaaz"
+assert strcmp(str1, str2,4)< 0
+assert strcmp("aaf","aaa",3)>0
+assert strcmp("aaa","aaa",1) = 0
+assert strcmp("aq","afuck",1) = 0
+
+
+		strchar
+String str = "hello"
+assert strchar(str, 'e') = 1
+assert strchar(str, 'q') < 0
+assert strchar(str, 'l') = 2
+
+		strrchar
+String str = "hello"
+assert strrchar(str, 'e') = 1
+assert strrchar(str, 'q') < 0
+assert strrchar(str, 'l') = 3
+
+
+		strpbrk
+String str = "hello"
+String key = "low"
+assert strpbrk(str,key) = 2
+assert strpbrk(str,"fuck") < 0
+
+
+		strcspn
+String str = "hello"
+String compare = "low"
+assert strcspn(str,compare) = 2
+assert strcspn(str,"fuck") = 5
+
+
+		strlen
+String str = "hello"
+assert strlen(str) = 5
+assert strlen("") = 0
+
+
+
+
+
+
