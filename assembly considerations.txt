@@ -1,0 +1,22 @@
+************************************ASSEMBLY GENERATION CONSIDERATIONS************************************
+There will be a generic header will prepend the assembly file:
+
+
+
+All subsequent functions should be prepended with the following annotations
+
+
+
+
+In the function's code block, space should be allocated for all local variables
+    each local variable should be individually cleared with an xor operation
+
+when returning variables from function calls, the return value should be placed in the $t9 register
+All stack pushes should have an equal number of stack pops within the same scope, to prevent stack errors
+
+Blocks within a function should end with either a JUMP, or RETURN instruction.
+    this removes the need to order blocks properly for fallthroughs
+
+No constants should be stored in the data section.  Because constants are statically known, 
+	they should be defined in a macro
+Each block should have a comment above it containing a description of its purpose
