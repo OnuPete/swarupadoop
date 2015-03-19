@@ -1,0 +1,12 @@
+int str.length(String str){
+	int i = 0;
+	while(str.charAt(i) != null){
+		i++
+	}
+	return i;
+}
+
+
+int charAt(String str, int i){
+	return i*memoryLocation(str)
+}

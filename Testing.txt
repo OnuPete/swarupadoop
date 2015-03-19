@@ -1,0 +1,27 @@
+Testing:
+
+		strcpy
+String copyTo;
+String copyFrom = "hi"
+strcpy(copyTo, copyFrom)
+assert copyTo == "hi"
+
+		strncpy
+String copyTo;
+String copyFrom = "hi"
+strcpy(copyTo, copyFrom,1)
+assert copyTo == "h"
+strcpy(copyTo, copyFrom,0)
+assert copyTo == ""
+strcpy(copyTo, copyFrom,3)
+assert copyTo == "hi00"
+
+
+		strcat
+String destination = "foo"
+String source = "bar"
+strcat(destination, source)
+assert destination = "foobar"
+
+
+		

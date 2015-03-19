@@ -1,0 +1,97 @@
+void strcpy(String result, String source){
+	strncpy(result, source, source.length)
+}
+
+
+void strncpy(String result, String source, int num){
+	for(int i = 0; i< num; i++){
+		if(source.charAt(i) != null){//add characters from source
+			result.append(source.charAt(i))
+		} else {//pad with 0's if necessary
+			result.append('0')
+		}
+	}
+}
+
+
+void strcat(String result, String source){
+	strncat(result, source, source.length)
+}
+
+void strncat(String result, String source, int num){
+	for(int i = 0; i < num; i++){
+		result.append(source.charAt(i))
+	}
+}
+
+int strcmp(String str1, String str2){
+	return strncmp(MAX(str1.length, str2.length))
+}
+
+
+int strncmp(String str1, String str2, int num){
+	for(int i = 0; i < num; i++){
+		if(i > str1.length || i > str2.length) return 0 //equal
+		if(str1.charAt(i) < str2.charAt(i)) return -1// str1's character has lower value
+		if(str1.charAt(i) > str2.charAt(i)) return 1
+	}
+	return 0
+}
+
+int strchar(String str, int character){
+	for(int i = 0; i< str.length; i++){
+		if(str.charAt(i) == character) return i
+	}
+	return -1
+}
+
+int strrchar(String str, int character){
+	for(int i = str.length; i >= 0; i--){
+		if(str.charAt(i) == character) return i
+	}
+	return -1
+}
+
+int strpbrk(String str1, String str2){
+	for(int i = 0; i < str2.length; i++){
+		int loc = strchar(str1, str2.charAt(i))
+		if(loc >= 0) return loc
+	}
+	return loc//returns -1 if not found
+}
+
+int strcspan(String search, String key){
+	for(int i = 0; i < search.length; i++){
+		int loc = strchar(str1, str2.charAt(i))
+		if(loc >= 0) return loc
+	}
+	return search.length
+}
+
+int strlen(String str){
+	int i = 0;
+	while(str.charAt(i) != null){
+		i++
+	}
+	return i;
+}
+
+int strstr(String container, String key){
+	//nontrivial
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
