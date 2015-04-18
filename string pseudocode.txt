@@ -1,8 +1,16 @@
+Various info on strings in MIPS:
+http://courses.cs.washington.edu/courses/cse378/09wi/lectures/lec04-annotated.pdf
+
+
+
+http://www.es.ele.tue.nl/education/Computation/Cmp18.pdf
+	slide 44
 void strcpy(String result, String source){
 	strncpy(result, source, source.length)
 }
 
-
+https://raw.githubusercontent.com/cblades/MIPS-projects/master/fun.s
+	search for "-strncpy-"
 void strncpy(String result, String source, int num){
 	for(int i = 0; i< num; i++){
 		if(source.charAt(i) != null){//add characters from source
@@ -13,7 +21,8 @@ void strncpy(String result, String source, int num){
 	}
 }
 
-
+http://cs.lamar.edu/faculty/foreman/MIPS_example_programs/StringEx.s
+	search for "Module Name: StrCat"
 void strcat(String result, String source){
 	strncat(result, source, source.length)
 }
@@ -24,11 +33,13 @@ void strncat(String result, String source, int num){
 	}
 }
 
+http://cs.lamar.edu/faculty/foreman/MIPS_example_programs/StringEx.s
+	search for "Module Name: StrCmp"
 int strcmp(String str1, String str2){
 	return strncmp(MAX(str1.length, str2.length))
 }
 
-
+http://forums.codeguru.com/showthread.php?366200-problem-with-writing-strncmp%28%29-with-Assembly
 int strncmp(String str1, String str2, int num){
 	for(int i = 0; i < num; i++){
 		if(i > str1.length || i > str2.length) return 0 //equal
@@ -38,6 +49,7 @@ int strncmp(String str1, String str2, int num){
 	return 0
 }
 
+https://searchcode.com/codesearch/view/4324637/
 int strchar(String str, int character){
 	for(int i = 0; i< str.length; i++){
 		if(str.charAt(i) == character) return i
@@ -45,12 +57,14 @@ int strchar(String str, int character){
 	return -1
 }
 
+http://code.metager.de/source/xref/freebsd/lib/libc/mips/string/strrchr.S
 int strrchar(String str, int character){
 	for(int i = str.length; i >= 0; i--){
 		if(str.charAt(i) == character) return i
 	}
 	return -1
 }
+
 
 int strpbrk(String str1, String str2){
 	for(int i = 0; i < str2.length; i++){
@@ -68,6 +82,8 @@ int strcspn(String search, String key){
 	return search.length
 }
 
+https://raw.githubusercontent.com/cblades/MIPS-projects/master/fun.s
+	search for "-strlen-"
 int strlen(String str){
 	int i = 0;
 	while(str.charAt(i) != null){
@@ -79,19 +95,3 @@ int strlen(String str){
 int strstr(String container, String key){
 	//nontrivial
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
