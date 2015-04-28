@@ -1,3 +1,11 @@
+#current state: writing front end
+#	
+#
+#
+#
+#
+#
+
 .data
 	_strcpy:	.asciiz	"strcpy"		#dest, src
 	_strncpy:	.asciiz 	"strncpy"	#dest, src, n
@@ -25,7 +33,10 @@
 
 	introduction:	.asciiz "please enter one of the following, or 'help' for usage"
 	introduction_2	.asciiz "strcpy, strncpy, strcat, strncat, strlen, strpbrk, strcspn, strcmp, strncmp"
-	_help:		.asciiz "help"
+	_help:		.asciiz "help" 
+
+	str1:	.space 140	#we're dealing strictly with tweetable strings here
+	str2:	.space 140
 
 .text
 .globl main
@@ -39,7 +50,12 @@ main:
 	la $a0, introduction_2
 	jal print_string
 	#if help, branch to print_usages
-	
+
+
+
+
+
+
 
 print_usages:
 	la $a0, _strcpy_usage
@@ -76,3 +92,51 @@ print_int:
 	li $v0, 1        # system call code for print_int
 	syscall
 	jr
+
+read_string:		#str1 will contain contents after this block is executed.
+	li $v0, 8	#system call code for read_string
+	li $a0, 140	#length of string to read
+	la $a0, str1	#where to read string into
+	syscall
+	jr
+
+
+
+
+#——————————————————-strcmp————————————-——————
+# Compare the two strings
+# $a0 stores the address of the first string
+# $a1 stores the address of the second string
+# returns -1, 0, or +1 
+
+.text
+.ent strcmp         				#make strcpy an entry point
+
+strcmp:
+	lbu $t0, 0($a0) 			#Loads byte from first string
+	lbu $t1, 0($a1) 			#Loads byte from second string
+	
+# Compare characters loaded
+	blt $t0, $t1, Minus 			#Return -1 if first char is < second char
+	bgt $t0, $t1, Plus 			#Return +1 if first char is > second char
+	beqz $t1,Zero 				#Return 0 if both are equal or null
+continue:
+	addi $a0,$a0,1
+	addi $a1,$a1,1
+	b strcmp
+
+#return if s1 < s2
+Minus:
+	li $v0,-1
+	j $ra
+
+#return if s1 > s2
+Plus:
+	li $v0,1
+	j $ra
+
+#returned if s1 == s2
+Zero:
+	li $v0,0
+	j $ra
+	.end
