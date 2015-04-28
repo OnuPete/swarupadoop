@@ -32,7 +32,7 @@
 	_arg3:			.asciiz 	"please input arg3:"
 
 	introduction:	.asciiz "please enter one of the following, or 'help' for usage"
-	introduction_2	.asciiz "strcat, strncat, strlen, strpbrk, strcspn, strcmp, strncmp"
+	introduction_2:	.asciiz "strcat, strncat, strlen, strpbrk, strcspn, strcmp, strncmp"
 	_help:		.asciiz "help" 
 
 	str1:	.space 140	#we're dealing strictly with tweetable strings here
@@ -52,8 +52,8 @@ main:
 
 	jal read_string #read response
 
-	la $a0, $v0	#put the return value into $a0
-	la $s0, $v0	#but also save it, as $a0 will be destroyed
+	la $a0, ($v0)	#put the return value into $a0
+	la $s0, ($v0)	#but also save it, as $a0 will be destroyed
 	la $a1, _help	
 	jal strcmp 	#compare it to 'help'
 
@@ -62,47 +62,47 @@ main:
 	#$s0 still contains the command string.
 	#now we go through all the possible commands, and execute witchever one the user asked for
 
-	la $a0, $s0 #copy query string into arg1
+	la $a0, ($s0) #copy query string into arg1
 	la $a1, _strcat
 	jal strcmp
 	beqz $v0, call_strcat
 
-	la $a0, $s0 #copy query string into arg1
+	la $a0, ($s0) #copy query string into arg1
 	la $a1, _strncat
 	jal strcmp
 	beqz $v0, call_strncat
 
-	la $a0, $s0 #copy query string into arg1
+	la $a0, ($s0) #copy query string into arg1
 	la $a1, _strlen
 	jal strcmp
 	beqz $v0, call_strlen
 
-	la $a0, $s0 #copy query string into arg1
+	la $a0, ($s0) #copy query string into arg1
 	la $a1, _strpbrk
 	jal strcmp
 	beqz $v0, call_strpbrk
 
-	la $a0, $s0 #copy query string into arg1
+	la $a0, ($s0) #copy query string into arg1
 	la $a1, _strcspn
 	jal strcmp
 	beqz $v0, call_strcspn
 
-	la $a0, $s0 #copy query string into arg1
+	la $a0, ($s0) #copy query string into arg1
 	la $a1, _strcmp
 	jal strcmp
 	beqz $v0, call_strcmp
 
-	la $a0, $s0 #copy query string into arg1
+	la $a0, ($s0) #copy query string into arg1
 	la $a1, _strncmp
 	jal strcmp
 	beqz $v0, call_strncmp
 
-	la $a0, $s0 #copy query string into arg1
+	la $a0, ($s0) #copy query string into arg1
 	la $a1, _strchr
 	jal strcmp
 	beqz $v0, call_strchr
 
-	la $a0, $s0 #copy query string into arg1
+	la $a0, ($s0) #copy query string into arg1
 	la $a1, _strrchr
 	jal strcmp
 	beqz $v0, call_strrchr
@@ -114,21 +114,21 @@ main:
 print_usages:
 
 	la $a0, _strcat_usage
-	print_string
+	jal print_string
 	la $a0, _strncat_usage
-	print_string
+	jal print_string
 	la $a0, _strlen_usage
-	print_string
+	jal print_string
 	la $a0, _strpbrk_usage
-	print_string
+	jal print_string
 	la $a0, _strcspn_usage
-	print_string
+	jal print_string
 	la $a0, _strcmp_usage
-	print_string
+	jal print_string
 	la $a0, _strncmp_usage
-	print_string
+	jal print_string
 	la $a0, introduction
-	print_string
+	jal print_string
 	j main
 
 
@@ -179,24 +179,24 @@ terminate:
 
 call_strcat:
 	la $a0, _strcat_usage
-	print_string
+	jal print_string
 
 	la $a0, _arg1
-	print_string
-	read_string
-	la $s0, $v0	#save the input
+	jal print_string
+	jal read_string
+	la $s0, ($v0)	#save the input
 
 	la $a0, _arg2
-	print_string
-	read_string
-	la $a1, $v0	#second input goes straight to argument for strcat
+	jal print_string
+	jal read_string
+	la $a1, ($v0)	#second input goes straight to argument for strcat
 
-	la $a0, $s0	#first input gets taken from its save location to the argument
+	la $a0, ($s0)	#first input gets taken from its save location to the argument
 
 	jal  strcat 	#call the actual function
 
-	la $a0, $v0	#take the input, and load it straight into the print_string argument
-	print_string
+	la $a0, ($v0)	#take the input, and load it straight into the print_string argument
+	jal print_string
 
 	j terminate 	#exit.
 #end of call_strcat
@@ -204,30 +204,30 @@ call_strcat:
 
 call_strncat:
 	la $a0, _strncat_usage
-	print_string
+	jal print_string
 
 	la $a0, _arg1
-	print_string
-	read_string
-	la $s0, $v0	#save the first input
+	jal print_string
+	jal read_string
+	la $s0, ($v0)	#save the first input
 
 	la $a0, _arg2
-	print_string
-	read_string
-	la $s1, $v0	#save the second input
+	jal print_string
+	jal read_string
+	la $s1, ($v0)	#save the second input
 
 	la $a0, _arg3
-	print_string
-	read_int
+	jal print_string
+	jal read_int
 	move $a2, $v0#third input goes straight to argument for strncat
 
-	la $a0, $s0	#first input gets taken from its save location to the argument
-	la $a1, $s1
+	la $a0, ($s0)	#first input gets taken from its save location to the argument
+	la $a1, ($s1)
 
 	jal  strncat 	#call the actual function
 
-	la $a0, $v0	#take the input, and load it straight into the print_string argument
-	print_string
+	la $a0, ($v0)	#take the input, and load it straight into the print_string argument
+	jal print_string
 
 	j terminate 	#exit.
 #end of call_strncat
@@ -235,17 +235,17 @@ call_strncat:
 
 call_strlen:
 	la $a0, _strlen_usage
-	print_string
+	jal print_string
 
 	la $a0, _arg1
-	print_string
-	read_string
-	la $a0, $v0	#save the input straight to the argument for strlen
+	jal print_string
+	jal read_string
+	la $a0, ($v0)	#save the input straight to the argument for strlen
 
 	jal  strlen	#call the actual function
 
 	move $a0, $v0	#take the input, and load it straight into the print_string argument
-	print_int
+	jal print_int
 
 	j terminate 	#exit.
 #end of call_strlen
@@ -253,24 +253,24 @@ call_strlen:
 
 call_strpbrk:
 	la $a0, _strpbrk_usage
-	print_string
+	jal print_string
 
 	la $a0, _arg1
-	print_string
-	read_string
-	la $s0, $v0	#save the input
+	jal print_string
+	jal read_string
+	la $s0, ($v0)	#save the input
 
 	la $a0, _arg2
-	print_string
-	read_string
-	la $a1, $v0	#second input goes straight to argument for strcat
+	jal print_string
+	jal read_string
+	la $a1, ($v0)	#second input goes straight to argument for strcat
 
-	la $a0, $s0	#first input gets taken from its save location to the argument
+	la $a0, ($s0)	#first input gets taken from its save location to the argument
 
 	jal  strpbrk 	#call the actual function
 
-	la $a0, $v0	#take the input, and load it straight into the print_string argument
-	print_string
+	la $a0, ($v0)	#take the input, and load it straight into the print_string argument
+	jal print_string
 
 	j terminate 	#exit.
 #end of call_strpbrk
@@ -278,24 +278,24 @@ call_strpbrk:
 
 call_strcspn:
 	la $a0, _strcspn_usage
-	print_string
+	jal print_string
 
 	la $a0, _arg1
-	print_string
-	read_string
-	la $s0, $v0	#save the input
+	jal print_string
+	jal read_string
+	la $s0, ($v0)	#save the input
 
 	la $a0, _arg2
-	print_string
-	read_string
-	la $a1, $v0	#second input goes straight to argument for strcat
+	jal print_string
+	jal read_string
+	la $a1, ($v0)	#second input goes straight to argument for strcat
 
-	la $a0, $s0	#first input gets taken from its save location to the argument
+	la $a0, ($s0)	#first input gets taken from its save location to the argument
 
 	jal  strcspn 	#call the actual function
 
-	move $a0, $v0	#take the input, and load it straight into the print_string argument
-	print_int
+	move $a0,  $v0	#take the input, and load it straight into the print_string argument
+	jal print_int
 
 	j terminate 	#exit.
 #end of call_strpbrk
@@ -303,54 +303,54 @@ call_strcspn:
 
 call_strcmp:
 	la $a0, _strcmp_usage
-	print_string
+	jal print_string
 
 	la $a0, _arg1
-	print_string
-	read_string
-	la $s0, $v0	#save the input
+	jal print_string
+	jal read_string
+	la $s0, ($v0)	#save the input
 
 	la $a0, _arg2
-	print_string
-	read_string
-	la $a1, $v0	#second input goes straight to argument for strcat
+	jal print_string
+	jal read_string
+	la $a1, ($v0)	#second input goes straight to argument for strcat
 
-	la $a0, $s0	#first input gets taken from its save location to the argument
+	la $a0, ($s0)	#first input gets taken from its save location to the argument
 
 	jal  strcmp 	#call the actual function
 
 	move $a0, $v0	#take the input, and load it straight into the print_string argument
-	print_int
+	jal print_int
 
 	j terminate 	#exit.
 #end of call_strcmp
 
 call_strncmp:
 	la $a0, _strncmp_usage
-	print_string
+	jal print_string
 
 	la $a0, _arg1
-	print_string
-	read_string
-	la $s0, $v0	#save the first input
+	jal print_string
+	jal read_string
+	la $s0, ($v0)	#save the first input
 
 	la $a0, _arg2
-	print_string
-	read_string
-	la $s1, $v0	#save the second input
+	jal print_string
+	jal read_string
+	la $s1, ($v0)	#save the second input
 
 	la $a0, _arg3
-	print_string
-	read_int
+	jal print_string
+	jal read_int
 	move $a2, $v0#third input goes straight to argument for strncat
 
-	la $a0, $s0	#first input gets taken from its save location to the argument
-	la $a1, $s1
+	la $a0, ($s0)	#first input gets taken from its save location to the argument
+	la $a1, ($s1)
 
 	jal  strncmp 	#call the actual function
 
 	move $a0, $v0	#take the input, and load it straight into the print_string argument
-	print_int
+	jal print_int
 
 	j terminate 	#exit.
 #end of call_strncmp
@@ -358,24 +358,24 @@ call_strncmp:
 
 call_strchr:
 	la $a0, _strchr_usage
-	print_string
+	jal print_string
 
 	la $a0, _arg1
-	print_string
-	read_string
-	la $s0, $v0	#save the input
+	jal print_string
+	jal read_string
+	la $s0, ($v0)	#save the input
 
 	la $a0, _arg2
-	print_string
-	read_string
-	la $a1, $v0	#second input goes straight to argument for strcat
+	jal print_string
+	jal read_string
+	la $a1, ($v0)	#second input goes straight to argument for strcat
 
-	la $a0, $s0	#first input gets taken from its save location to the argument
+	la $a0, ($s0)	#first input gets taken from its save location to the argument
 
 	jal  strchr 	#call the actual function
 
 	move $a0, $v0	#take the input, and load it straight into the print_string argument
-	print_int
+	jal print_int
 
 	j terminate 	#exit.
 #end of call_strchr
@@ -383,24 +383,24 @@ call_strchr:
 
 call_strrchr:
 	la $a0, _strrchr_usage
-	print_string
+	jal print_string
 
 	la $a0, _arg1
-	print_string
-	read_string
-	la $s0, $v0	#save the input
+	jal print_string
+	jal read_string
+	la $s0, ($v0)	#save the input
 
 	la $a0, _arg2
-	print_string
-	read_string
-	la $a1, $v0	#second input goes straight to argument for strcat
+	jal print_string
+	jal read_string
+	la $a1, ($v0)	#second input goes straight to argument for strcat
 
-	la $a0, $s0	#first input gets taken from its save location to the argument
+	la $a0, ($s0)	#first input gets taken from its save location to the argument
 
 	jal  strrchr 	#call the actual function
 
 	move $a0, $v0	#take the input, and load it straight into the print_string argument
-	print_int
+	jal print_int
 
 	j terminate 	#exit.
 #end of call_strrchr
@@ -449,4 +449,90 @@ Plus:
 Zero:
 	li $v0,0
 	jr $ra
-.end
+#end of strcmp
+
+
+#——————————————————-strchr————————————-——————
+#STRCHR FINDS THE INDEX OF THE FIRST INSTANCE OF A GIVEN CHAR IN A GIVEN STRING
+.TEXT
+.ENT	STRCHR		#STRCHR IS AN ENTRY POINT
+
+strchr:
+					#$A0 CONTAINS STRING TO SEARCH
+					#$A1 CONTAINS CHARACTER TO SEARCH FOR
+					#$V0 WILL CONTAIN RETURN VALUE, INDEX OF A1 IN A0, OR -1 IF NOT FOUND
+					#$S0 WILL CONTAIN LENGTH OF STRING IN $A0
+					#$S1 WILL CONTAIN THE CURRENT SEARCH DEPTH
+
+
+	JAL strlen			#GET LENGTH OF STRING IN $A0, PLACE IT IN $V0
+	MOVE $s0, $v0			#$V0 IS FOR RETURN VALUES, AND THIS IS INTERNAL. WE COPY IT TO $S0
+	XOR $v0, $v0, $v0		#CLEAR RETURN VARIABLE AND COUNTER
+	XOR $s1, $s1, $s1		
+STRCHRLOOP:
+	LBU	$t0, 0($a0)		#LOAD A BYTE FROM THE STRING
+	LBU	$t1, 0($a1)		#LOAD THE COMPARISON CHAR
+	BEQ	$t0, $t1, STRCHRFND 	#FOUND
+	BEQZ	$t0,  STRCHREND 	#END OF STRING
+	ADDI	$a0, $a0, 1		#INCREMENT CHARACTER
+	ADDI	$s1, $s1, 1		#INCREMENT COUNTER
+	B 	STRCHRLOOP		#NOT FOUND OR END, REPEAT LOOP
+
+STRCHRFND:				#FOUND, RETURN INDEX OF LOCATION
+	SW	$v0, ($s1)
+	JR	$ra
+
+STRCHREND:				#NOT FOUND, RETURN -1
+	LI	$v0, -1
+	JR	$ra
+
+
+#——————————————————-strrchr————————————-——————
+#STRRCHR FINDS THE INDEX OF THE LAST INSTANCE OF A GIVEN CHAR IN A GIVEN STRING
+.TEXT
+.ENT	STRRCHR		#STRRCHR IS AN ENTRY POINT
+
+strrchr:
+					#$A0 CONTAINS STRING TO SEARCH
+					#$A1 CONTAINS CHARACTER TO SEARCH FOR
+					#$V0 WILL CONTAIN RETURN VALUE, LAST INDEX OF A1 IN A0, OR -1 IF NOT FOUND
+					#$S0 WILL CONTAIN LENGTH OF STRING IN $A0
+					#$S1 WILL CONTAIN THE CURRENT SEARCH DEPTH
+
+
+	LI $v0, -1			#default the return variable to unfound
+	XOR $t2, $t2, $t2		#counter to keep track of the current location in the string
+	MOVE $s0, $v0			#$V0 IS FOR RETURN VALUES, AND THIS IS INTERNAL. WE COPY IT TO $S0
+	MOVE $s1, $s0
+STRRCHRLOOP:
+
+	ADDI	$t2, $t2, 1		#increment the counter to keep track of the location
+	LBU	$t0, 0($a0)   		#LOADING VALUE
+	LBU	$t1, 0($a1)		#LOAD THE COMPARISON CHAR
+	BEQ	$t0, $t1, STRRCHRFND 	#FOUND
+	BEQZ	$s1, STRRCHREND
+	B 	STRRCHRLOOP
+
+STRRCHRFND:				#FOUND, RETURN INDEX OF LOCATION
+	MOVE	$v0, $t2
+	B STRRCHRLOOP
+
+STRRCHREND:	
+	JR	$ra
+#end of strrchr
+
+
+
+
+strcat:
+#unimplemented
+strncat:
+#unimplementd
+strlen:
+#unimplemented
+strpbrk:
+#unimplemented
+strcspn:
+#unimplemented
+strncmp:
+#unimplemented
