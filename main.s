@@ -32,8 +32,9 @@
 	_arg3:			.asciiz 	"\nplease input arg3:"
 
 	introduction:	.asciiz "please enter one of the following, or 'help' for usage"
-	introduction_2:	.asciiz "\nstrcat, strncat, strlen, strpbrk, strcspn, strcmp, strncmp\n"
+	introduction_2:	.asciiz "\nstrcat, strncat, strlen, strpbrk, strcspn, strcmp, strncmp, strchr, strrchr\n"
 	_help:		.asciiz "help\n" 
+	newline:	.asciiz "\n"
 
 	str1:	.space 140	#we're dealing strictly with tweetable strings here
 	str2:	.space 140
@@ -164,6 +165,8 @@ terminate:
 	li $v0, 10        # system call code for exit
 	syscall
 	#no point in jumping, control flow is terminated.
+
+
 
 #---------------- intermediate functions ----------------
 # 	_strcat:		#dest, src
@@ -458,12 +461,9 @@ strchr:
 					#$a0 contains string to search
 					#$a1 contains character to search for
 					#$v0 will contain return value, index of a1 in a0, or -1 if not found
-					#$s0 will contain length of string in $a0
 					#$s1 will contain the current search depth
 
 
-	jal strlen			#get length of string in $a0, place it in $v0
-	move $s0, $v0			#$v0 is for return values, and this is internal. we copy it to $s0
 	xor $v0, $v0, $v0		#clear return variable and counter
 	xor $s1, $s1, $s1		
 strchrloop:
@@ -476,7 +476,7 @@ strchrloop:
 	b 	strchrloop		#not found or end, repeat loop
 
 strchrfnd:				#found, return index of location
-	sw	$v0, ($s1)
+	move	$v0, $s1
 	jr	$ra
 
 strchrend:				#not found, return -1
@@ -503,11 +503,12 @@ strrchr:
 	move $s1, $s0
 strrchrloop:
 
-	addi	$t2, $t2, 1		#increment the counter to keep track of the location
 	lbu	$t0, 0($a0)   		#loading value
 	lbu	$t1, 0($a1)		#load the comparison char
 	beq	$t0, $t1, strrchrfnd 	#found
 	beqz	$s1, strrchrend
+	addi	$t2, $t2, 1		#increment the counter to keep track of the location
+	addi 	$a0, $a0, 1		#move forward one character
 	b 	strrchrloop
 
 strrchrfnd:				#found, return index of location
@@ -571,6 +572,9 @@ strpbrk:
 #unimplemented
 
 strcspn:
+#unimplemented
+
+
 #—————————————strncmp————————————
 # Compare the characters of two strings, s1 and s2
 # if the s1 char = the s2 char, $v0 is 0 (or equal)
