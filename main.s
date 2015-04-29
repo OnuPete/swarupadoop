@@ -1,8 +1,5 @@
 #current state: front end finished
-#	strchr returns 0 for "hello" searching for first instance of "l"
-#	strrchr gets stuck at "	lbu	$t1, 0($a1)		#load the comparison char"
-#
-#	the second string that gets read is always null
+#	strncmp says "hi" and "hello" are the same up to 5 letters 
 #
 #
 
@@ -477,8 +474,8 @@ strchr:
 strchrloop:
 	lbu	$t0, 0($a0)		#load a byte from the string
 	lbu	$t1, 0($a1)		#load the comparison char
+	beqz	$t0,  strchrend 	#last character in the string. base case end
 	beq	$t0, $t1, strchrfnd 	#found
-	beqz	$t0,  strchrend 	#end of string
 	addi	$a0, $a0, 1		#increment character
 	addi	$s1, $s1, 1		#increment counter
 	b 	strchrloop		#not found or end, repeat loop
@@ -506,20 +503,22 @@ strrchr:
 	li $v0, -1			#default the return variable to unfound
 	li $t2,  0			#counter to keep track of the current location in the string
 	move $s0, $v0			#$v0 is for return values, and this is internal. we copy it to $s0
-	move $s1, $s0
 
 strrchrloop:
-	lbu	$t0, 0($a0)   		#loading value
-	lbu	$t1, 0($a1)		#load the comparison char
+	lb	$t0, 0($a0)   		#loading value
+	lb	$t1, 0($a1)		#load the comparison char
+	beqz	$t0, strrchrend	#last character in the string. base case end.
 	beq	$t0, $t1, strrchrfnd 	#found
-	beqz	$s1, strrchrend
 	addi	$t2, $t2, 1		#increment the counter to keep track of the location
 	addi 	$a0, $a0, 1		#move forward one character
 	b 	strrchrloop
 
 strrchrfnd:				#found, return index of location
-	move	$v0, $t2
-	b strrchrloop
+	move	$v0, $t2		#say this location is the final answer
+	addi	$t2, $t2, 1		#increment the counter to keep track of the location
+	addi 	$a0, $a0, 1		#move forward one character
+	b strrchrloop			#continue doing this until the end of the string
+					#that way when the string is done, our last answer is correct
 
 strrchrend:	
 	jr	$ra
