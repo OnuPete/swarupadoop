@@ -1,8 +1,8 @@
-#current state: writing front end
-#	
+#current state: front end finished
+#	strchr returns 0 for "hello" searching for first instance of "l"
+#	strrchr gets stuck at "	lbu	$t1, 0($a1)		#load the comparison char"
 #
-#
-#
+#	the second string that gets read is always null
 #
 #
 
@@ -10,12 +10,12 @@
 	_strcat:		.asciiz 	"strcat\n"		#dest, src
 	_strncat: 	.asciiz 	"strncat\n"		#dest, src, n
 	_strlen:		.asciiz 	"strlen\n"		#src
-	_strpbrk:	.asciiz 	"strpbrk\n"	#src, char
-	_strcspn: 	.asciiz 	"strcspn\n"	#src, char
-	_strcmp: 	.asciiz 	"strcmp\n"	#str1, str2
-	_strncmp:	.asciiz 	"strncmp\n"	#str1, str2, n
+	_strpbrk:	.asciiz 	"strpbrk\n"		#src, char
+	_strcspn: 	.asciiz 	"strcspn\n"		#src, char
+	_strcmp: 	.asciiz 	"strcmp\n"		#str1, str2
+	_strncmp:	.asciiz 	"strncmp\n"		#str1, str2, n
 	_strchr:		.asciiz 	"strchr\n"		#src, char
-	_strrchr:	.asciiz 	"strrchr\n"	#src, char
+	_strrchr:	.asciiz 	"strrchr\n"		#src, char
 
 	_strcat_usage:		.asciiz 	"\nstrcat: concatenate arg2 onto the end of arg1"					#dest, src
 	_strncat_usage: 	.asciiz 	"\nstrncat: concatenate arg3 many characters of arg2 onto the end of arg1"		#dest, src, n
@@ -156,6 +156,16 @@ read_string:		#str1 will contain contents after this block is executed.
     	move $v0,$t0   # primary address = t0 address (load pointer)
 	jr $ra
 
+read_string_2:
+	li $v0, 8	#system call code for read_string
+	li $a0, 140	#length of string to read
+	la $a0, str2	#where to read string into
+	move $t0,$a0  #save string to t0
+	syscall
+	la $v0, str2 	#reload byte space to primary address
+    	move $v0,$t0   # primary address = t0 address (load pointer)
+	jr $ra
+
 read_int:
 	li $v0, 5        # system call code for read_int
 	syscall
@@ -191,7 +201,7 @@ call_strcat:
 
 	la $a0, _arg2
 	jal print_string
-	jal read_string
+	jal read_string_2
 	la $a1, ($v0)	#second input goes straight to argument for strcat
 
 	la $a0, ($s0)	#first input gets taken from its save location to the argument
@@ -216,7 +226,7 @@ call_strncat:
 
 	la $a0, _arg2
 	jal print_string
-	jal read_string
+	jal read_string_2
 	la $s1, ($v0)	#save the second input
 
 	la $a0, _arg3
@@ -248,6 +258,7 @@ call_strlen:
 	jal  strlen	#call the actual function
 
 	move $a0, $v0	#take the input, and load it straight into the print_string argument
+	addi $a0, $a0, -1	#a '\n' character is added in qtspim, so we subtract 1 to account for that.
 	jal print_int
 
 	j terminate 	#exit.
@@ -265,7 +276,7 @@ call_strpbrk:
 
 	la $a0, _arg2
 	jal print_string
-	jal read_string
+	jal read_string_2
 	la $a1, ($v0)	#second input goes straight to argument
 
 	la $a0, ($s0)	#first input gets taken from its save location to the argument
@@ -290,7 +301,7 @@ call_strcspn:
 
 	la $a0, _arg2
 	jal print_string
-	jal read_string
+	jal read_string_2
 	la $a1, ($v0)	#second input goes straight to argument
 
 	la $a0, ($s0)	#first input gets taken from its save location to the argument
@@ -315,7 +326,7 @@ call_strcmp:
 
 	la $a0, _arg2
 	jal print_string
-	jal read_string
+	jal read_string_2
 	la $a1, ($v0)	#second input goes straight to argument
 
 	la $a0, ($s0)	#first input gets taken from its save location to the argument
@@ -339,7 +350,7 @@ call_strncmp:
 
 	la $a0, _arg2
 	jal print_string
-	jal read_string
+	jal read_string_2
 	la $s1, ($v0)	#save the second input
 
 	la $a0, _arg3
@@ -370,7 +381,7 @@ call_strchr:
 
 	la $a0, _arg2
 	jal print_string
-	jal read_string
+	jal read_string_2
 	la $a1, ($v0)	#second input goes straight to argument
 
 	la $a0, ($s0)	#first input gets taken from its save location to the argument
@@ -395,7 +406,7 @@ call_strrchr:
 
 	la $a0, _arg2
 	jal print_string
-	jal read_string
+	jal read_string_2
 	la $a1, ($v0)	#second input goes straight to argument
 
 	la $a0, ($s0)	#first input gets taken from its save location to the argument
@@ -454,8 +465,6 @@ Zero:
 
 #——————————————————-strchr————————————-——————
 #strchr finds the index of the first instance of a given char in a given string
-.text
-.ent	strchr		#strchr is an entry point
 
 strchr:
 					#$a0 contains string to search
@@ -463,9 +472,8 @@ strchr:
 					#$v0 will contain return value, index of a1 in a0, or -1 if not found
 					#$s1 will contain the current search depth
 
-
-	xor $v0, $v0, $v0		#clear return variable and counter
-	xor $s1, $s1, $s1		
+	li $v0, 0			#clear return variable and counter
+	li $s1, 0		
 strchrloop:
 	lbu	$t0, 0($a0)		#load a byte from the string
 	lbu	$t1, 0($a1)		#load the comparison char
@@ -486,8 +494,6 @@ strchrend:				#not found, return -1
 
 #——————————————————-strrchr————————————-——————
 #strrchr finds the index of the last instance of a given char in a given string
-.text
-.ent	strrchr		#strrchr is an entry point
 
 strrchr:
 					#$a0 contains string to search
@@ -498,11 +504,11 @@ strrchr:
 
 
 	li $v0, -1			#default the return variable to unfound
-	xor $t2, $t2, $t2		#counter to keep track of the current location in the string
+	li $t2,  0			#counter to keep track of the current location in the string
 	move $s0, $v0			#$v0 is for return values, and this is internal. we copy it to $s0
 	move $s1, $s0
-strrchrloop:
 
+strrchrloop:
 	lbu	$t0, 0($a0)   		#loading value
 	lbu	$t1, 0($a1)		#load the comparison char
 	beq	$t0, $t1, strrchrfnd 	#found
@@ -549,8 +555,8 @@ strlen:
 	lb $s1 0($a0) 				#Load first character
 
 strlenLoop:					#end loop if current character is 0
-	beq $s1, $zero, strlenDone
-	beq $s0, $a1, strlenDone
+	beq $s1, $zero, strlen_done
+	beq $s0, $a1, strlen_done
 
 	addi $s0, $s0, 1 			#increment character count
 	addi $a0, $a0, 1 			#increment address
@@ -558,7 +564,7 @@ strlenLoop:					#end loop if current character is 0
 	lb $s1, 0($a0) 				#load next character
 	j strlenLoop
 
-strlenDone:					# restore registers from the stack
+strlen_done:					# restore registers from the stack
 	move $v0, $s0
 	lw $s1, 0($sp)
 	addi $sp, $sp, 4
@@ -599,7 +605,7 @@ strncmp_nxtchr:
 	add $v0, $t1, 0
 	sub $v0, $v0, $t2 			#places ($t1 - $t2) in $v0
 	
-	beq $t6, 0, strncmp_fin 		#if counter is 0, exit
+	beq $t6, 0, strncmp_fin 			#if counter is 0, exit
 	beq $t1, 0, strncmp_fin			#if char in s1 is 0, exit
 	beq $t2, 0, strncmp_fin			#if char in s2 is 0, exit
 	add $t4, $t4, 1				#increment s1 pointer
