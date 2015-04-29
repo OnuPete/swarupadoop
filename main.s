@@ -7,33 +7,33 @@
 #
 
 .data
-	_strcat:		.asciiz 	"strcat"		#dest, src
-	_strncat: 	.asciiz 	"strncat"	#dest, src, n
-	_strlen:		.asciiz 	"strlen"		#src
-	_strpbrk:	.asciiz 	"strpbrk"	#src, char
-	_strcspn: 	.asciiz 	"strcspn"	#src, char
-	_strcmp: 	.asciiz 	"strcmp"	#str1, str2
-	_strncmp:	.asciiz 	"strncmp"	#str1, str2, n
-	_strchr:		.asciiz 	"strchr"		#src, char
-	_strrchr:	.asciiz 	"strrchr"	#src, char
+	_strcat:		.asciiz 	"strcat\n"		#dest, src
+	_strncat: 	.asciiz 	"strncat\n"		#dest, src, n
+	_strlen:		.asciiz 	"strlen\n"		#src
+	_strpbrk:	.asciiz 	"strpbrk\n"	#src, char
+	_strcspn: 	.asciiz 	"strcspn\n"	#src, char
+	_strcmp: 	.asciiz 	"strcmp\n"	#str1, str2
+	_strncmp:	.asciiz 	"strncmp\n"	#str1, str2, n
+	_strchr:		.asciiz 	"strchr\n"		#src, char
+	_strrchr:	.asciiz 	"strrchr\n"	#src, char
 
-	_strcat_usage:		.asciiz 	"strcat: concatenate arg2 onto the end of arg1"					#dest, src
-	_strncat_usage: 	.asciiz 	"strncat: concatenate arg3 many characters of arg2 onto the end of arg1"		#dest, src, n
-	_strlen_usage:		.asciiz 	"strlen: return length of string in arg1"							#src
-	_strpbrk_usage:	.asciiz 	"strpbrk: return index of any character in arg2, found in arg1"			#str, chars
-	_strcspn_usage: 	.asciiz 	"strcspn: return number of characters in arg1 before first character in arg2 is seen"	#src, char
-	_strcmp_usage: 	.asciiz 	"strcmp: return comparison of arg1 and arg2"					#str1, str2
-	_strncmp_usage:	.asciiz 	"strncmp: return comparison of first arg3 characters of arg1 and arg2"		#str1, str2, n
-	_strchr_usage:		.asciiz 	"strchr: return first location of arg2's first character in arg1"				#str, char
-	_strrchr_usage:	.asciiz	"strrchr: return last location of arg2's first character in arg1"				#str, char
+	_strcat_usage:		.asciiz 	"\nstrcat: concatenate arg2 onto the end of arg1"					#dest, src
+	_strncat_usage: 	.asciiz 	"\nstrncat: concatenate arg3 many characters of arg2 onto the end of arg1"		#dest, src, n
+	_strlen_usage:		.asciiz 	"\nstrlen: return length of string in arg1"							#src
+	_strpbrk_usage:	.asciiz 	"\nstrpbrk: return index of any character in arg2, found in arg1"			#str, chars
+	_strcspn_usage: 	.asciiz 	"\nstrcspn: return number of characters in arg1 before first character in arg2 is seen"	#src, char
+	_strcmp_usage: 	.asciiz 	"\nstrcmp: return comparison of arg1 and arg2"					#str1, str2
+	_strncmp_usage:	.asciiz 	"\nstrncmp: return comparison of first arg3 characters of arg1 and arg2"		#str1, str2, n
+	_strchr_usage:		.asciiz 	"\nstrchr: return first location of arg2's first character in arg1"				#str, char
+	_strrchr_usage:	.asciiz	"\nstrrchr: return last location of arg2's first character in arg1"				#str, char
 
-	_arg1:			.asciiz 	"please input arg1:"
-	_arg2:			.asciiz 	"please input arg2:"
-	_arg3:			.asciiz 	"please input arg3:"
+	_arg1:			.asciiz 	"\nplease input arg1:"
+	_arg2:			.asciiz 	"\nplease input arg2:"
+	_arg3:			.asciiz 	"\nplease input arg3:"
 
 	introduction:	.asciiz "please enter one of the following, or 'help' for usage"
-	introduction_2:	.asciiz "strcat, strncat, strlen, strpbrk, strcspn, strcmp, strncmp"
-	_help:		.asciiz "help" 
+	introduction_2:	.asciiz "\nstrcat, strncat, strlen, strpbrk, strcspn, strcmp, strncmp\n"
+	_help:		.asciiz "help\n" 
 
 	str1:	.space 140	#we're dealing strictly with tweetable strings here
 	str2:	.space 140
@@ -60,7 +60,7 @@ main:
 	beqz $v0, print_usages #if the user input 'help' execute the usages routine.  This ends in a rerun of main, so this control flow is done.
 
 	#$s0 still contains the command string.
-	#now we go through all the possible commands, and execute witchever one the user asked for
+	#now we go through all the possible commands, and execute whichever one the user asked for
 
 	la $a0, ($s0) #copy query string into arg1
 	la $a1, _strcat
@@ -263,7 +263,7 @@ call_strpbrk:
 	la $a0, _arg2
 	jal print_string
 	jal read_string
-	la $a1, ($v0)	#second input goes straight to argument for strcat
+	la $a1, ($v0)	#second input goes straight to argument
 
 	la $a0, ($s0)	#first input gets taken from its save location to the argument
 
@@ -288,7 +288,7 @@ call_strcspn:
 	la $a0, _arg2
 	jal print_string
 	jal read_string
-	la $a1, ($v0)	#second input goes straight to argument for strcat
+	la $a1, ($v0)	#second input goes straight to argument
 
 	la $a0, ($s0)	#first input gets taken from its save location to the argument
 
@@ -313,7 +313,7 @@ call_strcmp:
 	la $a0, _arg2
 	jal print_string
 	jal read_string
-	la $a1, ($v0)	#second input goes straight to argument for strcat
+	la $a1, ($v0)	#second input goes straight to argument
 
 	la $a0, ($s0)	#first input gets taken from its save location to the argument
 
@@ -342,7 +342,7 @@ call_strncmp:
 	la $a0, _arg3
 	jal print_string
 	jal read_int
-	move $a2, $v0#third input goes straight to argument for strncat
+	move $a2, $v0#third input goes straight to argument
 
 	la $a0, ($s0)	#first input gets taken from its save location to the argument
 	la $a1, ($s1)
@@ -368,7 +368,7 @@ call_strchr:
 	la $a0, _arg2
 	jal print_string
 	jal read_string
-	la $a1, ($v0)	#second input goes straight to argument for strcat
+	la $a1, ($v0)	#second input goes straight to argument
 
 	la $a0, ($s0)	#first input gets taken from its save location to the argument
 
@@ -393,7 +393,7 @@ call_strrchr:
 	la $a0, _arg2
 	jal print_string
 	jal read_string
-	la $a1, ($v0)	#second input goes straight to argument for strcat
+	la $a1, ($v0)	#second input goes straight to argument
 
 	la $a0, ($s0)	#first input gets taken from its save location to the argument
 
@@ -404,9 +404,6 @@ call_strrchr:
 
 	j terminate 	#exit.
 #end of call_strrchr
-
-
-
 
 
 
@@ -453,72 +450,72 @@ Zero:
 
 
 #——————————————————-strchr————————————-——————
-#STRCHR FINDS THE INDEX OF THE FIRST INSTANCE OF A GIVEN CHAR IN A GIVEN STRING
-.TEXT
-.ENT	STRCHR		#STRCHR IS AN ENTRY POINT
+#strchr finds the index of the first instance of a given char in a given string
+.text
+.ent	strchr		#strchr is an entry point
 
 strchr:
-					#$A0 CONTAINS STRING TO SEARCH
-					#$A1 CONTAINS CHARACTER TO SEARCH FOR
-					#$V0 WILL CONTAIN RETURN VALUE, INDEX OF A1 IN A0, OR -1 IF NOT FOUND
-					#$S0 WILL CONTAIN LENGTH OF STRING IN $A0
-					#$S1 WILL CONTAIN THE CURRENT SEARCH DEPTH
+					#$a0 contains string to search
+					#$a1 contains character to search for
+					#$v0 will contain return value, index of a1 in a0, or -1 if not found
+					#$s0 will contain length of string in $a0
+					#$s1 will contain the current search depth
 
 
-	JAL strlen			#GET LENGTH OF STRING IN $A0, PLACE IT IN $V0
-	MOVE $s0, $v0			#$V0 IS FOR RETURN VALUES, AND THIS IS INTERNAL. WE COPY IT TO $S0
-	XOR $v0, $v0, $v0		#CLEAR RETURN VARIABLE AND COUNTER
-	XOR $s1, $s1, $s1		
-STRCHRLOOP:
-	LBU	$t0, 0($a0)		#LOAD A BYTE FROM THE STRING
-	LBU	$t1, 0($a1)		#LOAD THE COMPARISON CHAR
-	BEQ	$t0, $t1, STRCHRFND 	#FOUND
-	BEQZ	$t0,  STRCHREND 	#END OF STRING
-	ADDI	$a0, $a0, 1		#INCREMENT CHARACTER
-	ADDI	$s1, $s1, 1		#INCREMENT COUNTER
-	B 	STRCHRLOOP		#NOT FOUND OR END, REPEAT LOOP
+	jal strlen			#get length of string in $a0, place it in $v0
+	move $s0, $v0			#$v0 is for return values, and this is internal. we copy it to $s0
+	xor $v0, $v0, $v0		#clear return variable and counter
+	xor $s1, $s1, $s1		
+strchrloop:
+	lbu	$t0, 0($a0)		#load a byte from the string
+	lbu	$t1, 0($a1)		#load the comparison char
+	beq	$t0, $t1, strchrfnd 	#found
+	beqz	$t0,  strchrend 	#end of string
+	addi	$a0, $a0, 1		#increment character
+	addi	$s1, $s1, 1		#increment counter
+	b 	strchrloop		#not found or end, repeat loop
 
-STRCHRFND:				#FOUND, RETURN INDEX OF LOCATION
-	SW	$v0, ($s1)
-	JR	$ra
+strchrfnd:				#found, return index of location
+	sw	$v0, ($s1)
+	jr	$ra
 
-STRCHREND:				#NOT FOUND, RETURN -1
-	LI	$v0, -1
-	JR	$ra
+strchrend:				#not found, return -1
+	li	$v0, -1
+	jr	$ra
 
 
 #——————————————————-strrchr————————————-——————
-#STRRCHR FINDS THE INDEX OF THE LAST INSTANCE OF A GIVEN CHAR IN A GIVEN STRING
-.TEXT
-.ENT	STRRCHR		#STRRCHR IS AN ENTRY POINT
+#strrchr finds the index of the last instance of a given char in a given string
+.text
+.ent	strrchr		#strrchr is an entry point
 
 strrchr:
-					#$A0 CONTAINS STRING TO SEARCH
-					#$A1 CONTAINS CHARACTER TO SEARCH FOR
-					#$V0 WILL CONTAIN RETURN VALUE, LAST INDEX OF A1 IN A0, OR -1 IF NOT FOUND
-					#$S0 WILL CONTAIN LENGTH OF STRING IN $A0
-					#$S1 WILL CONTAIN THE CURRENT SEARCH DEPTH
+					#$a0 contains string to search
+					#$a1 contains character to search for
+					#$v0 will contain return value, last index of a1 in a0, or -1 if not found
+					#$s0 will contain length of string in $a0
+					#$s1 will contain the current search depth
 
 
-	LI $v0, -1			#default the return variable to unfound
-	XOR $t2, $t2, $t2		#counter to keep track of the current location in the string
-	MOVE $s0, $v0			#$V0 IS FOR RETURN VALUES, AND THIS IS INTERNAL. WE COPY IT TO $S0
-	MOVE $s1, $s0
-STRRCHRLOOP:
+	li $v0, -1			#default the return variable to unfound
+	xor $t2, $t2, $t2		#counter to keep track of the current location in the string
+	move $s0, $v0			#$v0 is for return values, and this is internal. we copy it to $s0
+	move $s1, $s0
+strrchrloop:
 
-	ADDI	$t2, $t2, 1		#increment the counter to keep track of the location
-	LBU	$t0, 0($a0)   		#LOADING VALUE
-	LBU	$t1, 0($a1)		#LOAD THE COMPARISON CHAR
-	BEQ	$t0, $t1, STRRCHRFND 	#FOUND
-	BEQZ	$s1, STRRCHREND
-	B 	STRRCHRLOOP
+	addi	$t2, $t2, 1		#increment the counter to keep track of the location
+	lbu	$t0, 0($a0)   		#loading value
+	lbu	$t1, 0($a1)		#load the comparison char
+	beq	$t0, $t1, strrchrfnd 	#found
+	beqz	$s1, strrchrend
+	b 	strrchrloop
 
-STRRCHRFND:				#FOUND, RETURN INDEX OF LOCATION
-	MOVE	$v0, $t2
-	B STRRCHRLOOP
+strrchrfnd:				#found, return index of location
+	move	$v0, $t2
+	b strrchrloop
 
-STRRCHREND:	
-	JR	$ra
+strrchrend:	
+	jr	$ra
 #end of strrchr
 
 
@@ -528,11 +525,85 @@ strcat:
 #unimplemented
 strncat:
 #unimplementd
+
+#—————————————————————strlen————————————————————
+# Find the length of the string at the address $a0 up to a max length of $a1
+#
+# $a0 stores the address of the string
+# $a1 is the max length of the string in address $a0
+#
+# Registers:
+# $s0 counts characters
+# $s1 holds the current character being counted
+#
+
 strlen:
-#unimplemented
+
+	addi $sp, $sp,  -4 			#Store registers on the stack
+	sw $s0, 0($sp)
+	addi $sp, $sp, -4
+	sw $s1, 0($sp)
+
+	li $s0 0 				#Set current count to 0
+	lb $s1 0($a0) 				#Load first character
+
+strlenLoop:					#end loop if current character is 0
+	beq $s1, $zero, strlenDone
+	beq $s0, $a1, strlenDone
+
+	addi $s0, $s0, 1 			#increment character count
+	addi $a0, $a0, 1 			#increment address
+
+	lb $s1, 0($a0) 				#load next character
+	j strlenLoop
+
+strlenDone:					# restore registers from the stack
+	move $v0, $s0
+	lw $s1, 0($sp)
+	addi $sp, $sp, 4
+	lw $s0, 0($sp)
+	addi $sp, $sp, 4
+	
+	jr $ra
+#end of strlen
+
 strpbrk:
 #unimplemented
+
 strcspn:
-#unimplemented
+#—————————————strncmp————————————
+# Compare the characters of two strings, s1 and s2
+# if the s1 char = the s2 char, $v0 is 0 (or equal)
+# if the s1 char > the s2 char, $v0 is positive
+# if the s1 char < the s2 char, $v0 is negative
+# $v0 holds the comparison result (s1 char - s2 char)
+
 strncmp:
-#unimplemented
+	sw $ra, 0($sp)
+	sub $sp, $sp, 4  			#decrement stack pointer
+
+	and $v0, $v0, 0  			#init result to 0
+	add $t4, $a0, 0  			#place s1 in $t4
+	add $t5, $a1, 0	 			#place s2 in $t5
+	add $t6, $a2, 0				#place length in $t6
+strncmp_nxtchr:
+	beq $t6, 0, strncmp_fin
+	sub $t6, $t6, 1   			#decrement $t6
+	lb $t1, ($t4)     			#load char from s1 to $t1
+	lb $t2, ($t5)	  			#load char from s2 to $t2
+	
+	add $v0, $t1, 0
+	sub $v0, $v0, $t2 			#places ($t1 - $t2) in $v0
+	
+	beq $t6, 0, strncmp_fin 		#if counter is 0, exit
+	beq $t1, 0, strncmp_fin			#if char in s1 is 0, exit
+	beq $t2, 0, strncmp_fin			#if char in s2 is 0, exit
+	add $t4, $t4, 1				#increment s1 pointer
+	add $t5, $t5, 1				#increment s2 pointer
+
+strncmp_fin:
+	add $sp, $sp, 4				#increment stack pointer
+	lw $ra, 0($sp)		
+	jr $ra					#return to caller
+
+#end of strncmp
