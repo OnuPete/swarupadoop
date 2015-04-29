@@ -595,6 +595,7 @@ strncmp:
 	add $t4, $a0, 0  			#place s1 in $t4
 	add $t5, $a1, 0	 			#place s2 in $t5
 	add $t6, $a2, 0				#place length in $t6
+
 strncmp_nxtchr:
 	beq $t6, 0, strncmp_fin
 	sub $t6, $t6, 1   			#decrement $t6
@@ -604,11 +605,13 @@ strncmp_nxtchr:
 	add $v0, $t1, 0
 	sub $v0, $v0, $t2 			#places ($t1 - $t2) in $v0
 	
-	beq $t6, 0, strncmp_fin 			#if counter is 0, exit
+	beq $t6, 0, strncmp_fin 		#if counter is 0, exit
 	beq $t1, 0, strncmp_fin			#if char in s1 is 0, exit
 	beq $t2, 0, strncmp_fin			#if char in s2 is 0, exit
 	add $t4, $t4, 1				#increment s1 pointer
 	add $t5, $t5, 1				#increment s2 pointer
+
+	beq $v0, 0, strncmp_nxtchr		#check result from subtraction
 
 strncmp_fin:
 	add $sp, $sp, 4				#increment stack pointer
