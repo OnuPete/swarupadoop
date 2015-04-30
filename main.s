@@ -526,11 +526,63 @@ strrchrend:
 
 
 
+#—————————————————————strcat————————————————————
+# Add the second string to the end of the first
+# $a0 stores the address of the first string
+# $a1 stores the address of the second string
+# returns nothing
+
 
 strcat:
-#unimplemented
+
+endSecondString:
+	lbu $t1, 0($a1)			# Get first char from the second string
+	beq $t1, $0, secondEnd		# If NULL, exit
+	addi $a1, $a1, 1
+	b endSecondString
+
+secondEnd:
+
+append:
+	lbu $t1, 0($a0)			# get first char of the first string
+	sb $t1, 0($a1)			# add it to rhe end of the second string
+	beq $t1, $0, catExit		# When null, goto exit
+	addi $a0, $a0, 1		# Increment the first string
+	addi $a1, $a1, 1		# Increment the second string
+	b append			# Loop
+
+catExit:
+	j $ra				#Return
+	.end
+	
+#—————————————————————strncat————————————————————
+# Add up to n chars of the second string to the end of the first
+# $a0 stores the address of the first string
+# $a1 stores the address of the second string
+# $a3 stores the address of n
+# returns nothing
 strncat:
-#unimplementd
+	sw $ra, 0($sp)			# Move the 
+	sub $sp, $sp, 4  
+
+	add $t6, $a2, 0
+
+append:
+	beq $t6, 0,  ncatExit
+	beq $a0, 0, ncatExit
+	beq $a1, 0, ncatExit
+	sub $t6, $t6, 1
+
+	lbu $t4, 0($a0)
+	sb $t1, 0($a1)
+	addi $a0, $a0, 1
+	addi $a1, $a1, 1
+	b append
+
+ncatExit:
+	add $sp, $sp, 4
+	j $ra
+	.end
 
 #—————————————————————strlen————————————————————
 # Find the length of the string at the address $a0 up to a max length of $a1
@@ -573,11 +625,78 @@ strlen_done:					# restore registers from the stack
 	jr $ra
 #end of strlen
 
+#—————————————————————strpbrk————————————————————
+# Find the first occurence of a letter in each of string one and two
+# $a0 stores the addres of the first string
+# $a1 stores the address of the second string
+# Returns the index of the first occurence of chars, else -1
+
 strpbrk:
-#unimplemented
+	li $v0, 0				#clear output
+	li $s1, 0				#clear counter
+
+findChar:
+	lbu $t1, 0($a1)				# Get first char in string 2
+	beqz $t1, strend			# Worst case, no string found
+	bge $t1, 0, charInString		# While there is a char, goto charInString
+	addi $a1, $a1, 1			# Increment second string char
+	b findChar					# Loop
+
+charInString:
+	lbu $t0, 0($a0)				# Get first char in string 1
+	beq $t0, $t1, strFound 			# Found char
+	addi $a0, $a0, 1			# Increment first string
+	addi $s1, $s1, 1			# Increment counter
+	b charInString				# Loop
+
+strFound:
+	move $v0, $s1				# Retrun index location
+	jr $ra
+
+strend:
+	li $v0, -1				# Index location not found
+	jr $ra					# retrun -1
+
+#—————————————————————strcspn————————————————————
+# Find the first occurence of a letter in each of string one and two or else find the length of string one
+# $a0 stores the addres of the first string
+# $a1 stores the address of the second string
+# Returns the index of the first occurence of chars, else Return the length of string one
 
 strcspn:
-#unimplemented
+	li $v0, 0				# Clear output
+	li $s2, 0				# Clear second counter
+
+findChar:
+	li $s1, 0				# Clear first counter
+	lbu $t1, 0($a1)				# Get first char of second string
+	beqz $t1, stringLength			# If not found, get length of string 1
+	bne $t1, 0, charInString		# While there is still a char in string 2,
+						# goto charInString
+	addi $a1, $a1, 1			# Increment the second string
+	b findChar				# Loop
+
+charInString:
+	lbu $t0, 0($a0)				# Get first char of string 1
+	beq $t0, $t1, strFound 			# If char in string 1 equals char in string 2,
+				 		# goto strFound
+	addi $a0, $a0, 1			# Increment first string
+	addi $s1, $s1, 1			# Increment second counter
+	b charInString				# Loop
+
+strfound:
+	move $v0, $s1				# Retrun index location
+	jr $ra
+
+stringLength:
+	lbu $t0, 0($a0)				# Get first char of string 1
+	beqz $t0, exit 				# When no more string, goto exit
+	addi $a0, $a0, 1			# Increment the first string
+	addi $s2, $s2, 1			# Increment the second counter
+	b stringLength				# Loop
+exit: 
+	move $v0, $s2				# Retrun first string length
+	jr $ra
 
 
 #—————————————strncmp————————————
