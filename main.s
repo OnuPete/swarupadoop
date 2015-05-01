@@ -536,16 +536,16 @@ strrchrend:
 strcat:
 
 endSecondString:
-	lbu $t1, 0($a1)			# Get first char from the second string
+	lbu $t1, 0($a0)			# Get first char from the second string
 	beq $t1, $0, secondEnd		# If NULL, exit
-	addi $a1, $a1, 1
+	addi $a0, $a0, 1
 	b endSecondString
 
 secondEnd:
 
 append:
-	lbu $t1, 0($a0)			# get first char of the first string
-	sb $t1, 0($a1)			# add it to rhe end of the second string
+	lbu $t1, 0($a1)			# get first char of the first string
+	sb $t1, 0($a0)			# add it to rhe end of the second string
 	beq $t1, $0, catExit		# When null, goto exit
 	addi $a0, $a0, 1		# Increment the first string
 	addi $a1, $a1, 1		# Increment the second string
@@ -638,7 +638,7 @@ strpbrk:
 findChar:
 	lbu $t1, 0($a1)				# Get first char in string 2
 	beqz $t1, strend			# Worst case, no string found
-	bge $t1, 0, charInString		# While there is a char, goto charInString
+	bge $t1, $0, charInString		# While there is a char, goto charInString
 	addi $a1, $a1, 1			# Increment second string char
 	b findChar					# Loop
 
@@ -671,7 +671,7 @@ findChar:
 	li $s1, 0				# Clear first counter
 	lbu $t1, 0($a1)				# Get first char of second string
 	beqz $t1, stringLength			# If not found, get length of string 1
-	bne $t1, 0, charInString		# While there is still a char in string 2,
+	bne $t1, $0, charInString		# While there is still a char in string 2,
 						# goto charInString
 	addi $a1, $a1, 1			# Increment the second string
 	b findChar				# Loop
